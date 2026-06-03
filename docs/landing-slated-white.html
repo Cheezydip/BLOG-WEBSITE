@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TechPulse — Landing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --color-bg:#f6f8fb; /* slated white base */
+      --color-card:#ffffff;
+      --color-text:#0f1724;
+      --color-muted:#6b7280;
+      --color-accent:#2563eb;
+      --radius:12px;
+      --max-w:1200px;
+      --sans: 'Poppins', sans-serif;
+      --serif: 'Merriweather', serif;
+    }
+    *{box-sizing:border-box}
+    body{font-family:var(--sans);background:var(--color-bg);color:var(--color-text);margin:0;line-height:1.6}
+    .container{max-width:var(--max-w);margin:0 auto;padding:48px 24px}
+    header{display:flex;justify-content:space-between;align-items:center;padding:8px 0}
+    .logo{font-weight:700;font-size:20px;letter-spacing:-0.5px}
+    .logo span{color:var(--color-accent)}
+    nav a{margin-left:20px;color:var(--color-muted);text-decoration:none;font-weight:600;font-size:14px}
+
+    /* HERO */
+    .hero{display:grid;grid-template-columns:1fr 420px;gap:32px;align-items:center;padding:48px 0}
+    .hero h1{font-family:var(--serif);font-size:44px;margin:0 0 12px}
+    .hero p{color:var(--color-muted);margin:0 0 20px}
+
+    .cta-row{display:flex;gap:12px}
+    .btn{padding:12px 18px;border-radius:10px;font-weight:700;border:0;cursor:pointer}
+    .btn-primary{background:var(--color-accent);color:#fff}
+    .btn-ghost{background:transparent;border:1px solid rgba(15,23,36,0.06);color:var(--color-text)}
+
+    /* card preview */
+    .preview{background:var(--color-card);border-radius:var(--radius);padding:22px;border:1px solid rgba(15,23,36,0.04);box-shadow:0 6px 18px rgba(15,23,36,0.04)}
+    .preview h3{margin:0 0 8px;font-size:18px}
+    .preview p{margin:0;color:var(--color-muted);font-size:14px}
+
+    /* features */
+    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:48px 0}
+    .feature{background:var(--color-card);padding:20px;border-radius:12px;border:1px solid rgba(15,23,36,0.03)}
+    .feature h4{margin:0 0 8px}
+    .feature p{margin:0;color:var(--color-muted);font-size:14px}
+
+    footer{padding:28px 0;color:var(--color-muted);border-top:1px solid rgba(15,23,36,0.04);display:flex;justify-content:space-between;align-items:center}
+
+    @media (max-width:900px){
+      .hero{grid-template-columns:1fr;}
+      .features{grid-template-columns:1fr}
+      nav a{margin-left:12px}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">Tech<span>Pulse</span></div>
+      <nav>
+        <a href="#">Articles</a>
+        <a href="#">Topics</a>
+        <a href="#">About</a>
+      </nav>
+    </header>
+
+    <section class="hero" aria-label="hero">
+      <div>
+        <h1>Engineering & AI Breakthroughs — Clear, Trusted Coverage</h1>
+        <p>In-depth articles, practical guides, and research summaries for engineers and builders working with AI, systems, and next-gen hardware.</p>
+        <div class="cta-row">
+          <button class="btn btn-primary">Get Started</button>
+          <button class="btn btn-ghost">Explore Articles</button>
+        </div>
+
+        <div class="features" style="margin-top:28px">
+          <div class="feature">
+            <h4>AI-Assisted Drafts</h4>
+            <p>Generate structured post drafts to jumpstart writing — editable and reviewable.</p>
+          </div>
+          <div class="feature">
+            <h4>Curated Research</h4>
+            <p>Summaries of key papers and reproducible reference links for deep dives.</p>
+          </div>
+          <div class="feature">
+            <h4>Newsletter & Updates</h4>
+            <p>Weekly highlights and deep-dive threads sent to subscribers.</p>
+          </div>
+        </div>
+      </div>
+
+      <aside class="preview" aria-label="preview card">
+        <h3>Featured: Quantum Supremacy</h3>
+        <p>How error correction and hardware innovations are unlocking practical quantum workflows.</p>
+        <div style="margin-top:16px;display:flex;justify-content:space-between;align-items:center">
+          <small style="color:var(--color-muted)">May 28, 2026</small>
+          <small style="background:var(--color-bg);padding:6px;border-radius:8px;color:var(--color-muted);font-weight:600">8 min</small>
+        </div>
+      </aside>
+    </section>
+
+    <footer>
+      <div>© 2026 TechPulse</div>
+      <div style="display:flex;gap:16px"><a href="#" style="color:var(--color-muted);text-decoration:none">Privacy</a><a href="#" style="color:var(--color-muted);text-decoration:none">Terms</a></div>
+    </footer>
+  </div>
+</body>
+</html>

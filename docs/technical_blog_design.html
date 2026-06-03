@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechPulse - Engineering & AI Breakthroughs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-white: #e9e9e9;
+            --color-off-white: #f8f8f8;
+            --color-slate-dark: #1a1a1a;
+            --color-slate-medium: #64748b;
+            --color-slate-light: #e2e8f0;
+            --color-slate-lighter: #f1f5f9;
+            --color-accent: #2563eb;
+            --color-text-muted: #7c8797;
+            --font-sans: 'Poppins', sans-serif;
+            --font-serif: 'Merriweather', serif;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--color-white);
+            color: var(--color-slate-dark);
+            line-height: 1.6;
+        }
+
+        /* ========== HEADER ========== */
+        header {
+            border-bottom: 1px solid var(--color-slate-light);
+            padding: 3rem 4rem;
+            background: var(--color-white);
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            color: var(--color-slate-dark);
+        }
+
+        .logo span {
+            color: var(--color-accent);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--color-text-muted);
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-menu a:hover {
+            color: var(--color-slate-dark);
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--color-accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+
+        /* ========== HERO SECTION ========== */
+        .hero {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 4rem;
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 0.5rem;
+            letter-spacing: -2px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: var(--color-text-muted);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .search-bar {
+            max-width: 500px;
+            margin: 0 auto 2rem;
+            display: flex;
+            gap: 0.5rem;
+            background: var(--color-off-white);
+            border: 1px solid var(--color-slate-light);
+            border-radius: 8px;
+            padding: 0.5rem;
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 0.75rem 1rem;
+            font-size: 14px;
+            font-family: var(--font-sans);
+            color: var(--color-slate-dark);
+        }
+
+        .search-bar input::placeholder {
+            color: var(--color-text-muted);
+        }
+
+        .search-bar input:focus {
+            outline: none;
+        }
+
+        .search-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--color-accent);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .categories {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .category-badge {
+            padding: 0.5rem 1rem;
+            background: var(--color-slate-lighter);
+            color: var(--color-slate-medium);
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .category-badge:hover,
+        .category-badge.active {
+            background: var(--color-accent);
+            color: white;
+            border-color: var(--color-accent);
+        }
+
+        /* ========== ARTICLES GRID ========== */
+        .articles-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem;
+        }
+
+        .section-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+        }
+
+        .section-header p {
+            color: var(--color-text-muted);
+            font-size: 16px;
+        }
+
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .article-card {
+            background: var(--color-off-white);
+            border: 1px solid var(--color-slate-light);
+            border-radius: 8px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            animation: fadeInCard 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeInCard {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .article-card:nth-child(1) { animation-delay: 0.1s; }
+        .article-card:nth-child(2) { animation-delay: 0.2s; }
+        .article-card:nth-child(3) { animation-delay: 0.3s; }
+        .article-card:nth-child(4) { animation-delay: 0.4s; }
+        .article-card:nth-child(5) { animation-delay: 0.5s; }
+        .article-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .article-card:hover {
+            border-color: var(--color-accent);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            transform: translateY(-4px);
+        }
+
+        .article-category {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--color-accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .article-title {
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1.35;
+            margin-bottom: 0.75rem;
+            color: var(--color-slate-dark);
+            font-family: var(--font-serif);
+            transition: color 0.3s ease;
+        }
+
+        .article-card:hover .article-title {
+            color: var(--color-accent);
+        }
+
+        .article-excerpt {
+            font-size: 14px;
+            color: var(--color-text-muted);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--color-text-muted);
+            padding-top: 1rem;
+            border-top: 1px solid var(--color-slate-light);
+        }
+
+        .article-date {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .reading-time {
+            background: var(--color-slate-lighter);
+            padding: 0.25rem 0.75rem;
+            border-radius: 4px;
+        }
+
+        /* ========== FEATURED ARTICLE ========== */
+        .featured-article {
+            background: linear-gradient(135deg, var(--color-slate-dark) 0%, #2d3748 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 12px;
+            margin-bottom: 3rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .featured-article::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .featured-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .featured-label {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--color-accent);
+            margin-bottom: 1rem;
+        }
+
+        .featured-article h2 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+            font-family: var(--font-serif);
+        }
+
+        .featured-article p {
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            opacity: 0.95;
+        }
+
+        .read-more-btn {
+            display: inline-block;
+            padding: 0.75rem 1.75rem;
+            background: var(--color-accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border: 2px solid var(--color-accent);
+        }
+
+        .read-more-btn:hover {
+            background: transparent;
+            color: var(--color-accent);
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar-section {
+            background: var(--color-slate-lighter);
+            padding: 2rem;
+            border-radius: 8px;
+            border: 1px solid var(--color-slate-light);
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-section h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--color-slate-light);
+        }
+
+        .topic-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            list-style: none;
+        }
+
+        .topic-item {
+            padding: 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--color-text-muted);
+            font-size: 14px;
+        }
+
+        .topic-item:hover {
+            background: var(--color-white);
+            color: var(--color-accent);
+            padding-left: 1rem;
+        }
+
+        .newsletter-form {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .newsletter-form input {
+            padding: 0.75rem;
+            border: 1px solid var(--color-slate-light);
+            border-radius: 6px;
+            font-family: var(--font-sans);
+            font-size: 14px;
+            background: var(--color-white);
+            transition: border 0.3s ease;
+        }
+
+        .newsletter-form input:focus {
+            outline: none;
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .newsletter-form button {
+            padding: 0.75rem;
+            background: var(--color-accent);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-size: 14px;
+        }
+
+        .newsletter-form button:hover {
+            background: #1d4ed8;
+        }
+
+        /* ========== FOOTER ========== */
+        footer {
+            background: var(--color-slate-dark);
+            color: #a0a9b8;
+            padding: 3rem 4rem;
+            border-top: 1px solid var(--color-slate-light);
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .footer-section a {
+            color: #a0a9b8;
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--color-slate-light);
+            padding-top: 2rem;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            header {
+                padding: 1.5rem 2rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .nav-menu {
+                gap: 1rem;
+                font-size: 12px;
+            }
+
+            .hero {
+                padding: 2rem;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .articles-section {
+                padding: 2rem;
+            }
+
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="header-content">
+            <div class="logo">Tech<span>Pulse</span></div>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#articles">Articles</a></li>
+                    <li><a href="#topics">Topics</a></li>
+                    <li><a href="#about">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <h1>Engineering & AI Breakthroughs</h1>
+        <p>Stay updated with the latest developments in quantum computing, neural networks, and breakthrough technologies reshaping our world.</p>
+        
+        <div class="search-bar">
+            <input type="text" placeholder="Search articles...">
+            <button class="search-btn">Search</button>
+        </div>
+
+        <div class="categories">
+            <span class="category-badge active">All</span>
+            <span class="category-badge">AI & Machine Learning</span>
+            <span class="category-badge">Quantum Computing</span>
+            <span class="category-badge">Engineering</span>
+            <span class="category-badge">Research</span>
+        </div>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <div class="articles-section">
+            <!-- FEATURED ARTICLE -->
+            <article class="featured-article">
+                <div class="featured-content">
+                    <span class="featured-label">Featured</span>
+                    <h2>Quantum Supremacy: The New Era of Computing</h2>
+                    <p>Recent breakthroughs in quantum error correction have moved us closer to practical quantum computers. Discover how these advances are reshaping the computational landscape and what it means for the future of technology.</p>
+                    <a href="#" class="read-more-btn">Read Full Article</a>
+                </div>
+            </article>
+
+            <!-- ARTICLES GRID -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem;">
+                <div>
+                    <div class="section-header">
+                        <h2>Latest Articles</h2>
+                        <p>Fresh insights from the tech frontier</p>
+                    </div>
+
+                    <div class="articles-grid" style="grid-template-columns: 1fr;">
+                        <article class="article-card">
+                            <span class="article-category">AI & ML</span>
+                            <h3 class="article-title">Neural Networks That Learn Like Humans</h3>
+                            <p class="article-excerpt">Researchers have developed a new approach to neural networks that mimics human cognitive learning patterns, significantly improving efficiency and reducing computational overhead.</p>
+                            <div class="article-meta">
+                                <div class="article-date">
+                                    <span>May 28, 2026</span>
+                                </div>
+                                <span class="reading-time">8 min</span>
+                            </div>
+                        </article>
+
+                        <article class="article-card">
+                            <span class="article-category">QUANTUM</span>
+                            <h3 class="article-title">Breaking the 1000-Qubit Barrier</h3>
+                            <p class="article-excerpt">A major milestone has been achieved in quantum computing with the successful operation of a 1000-qubit system. This breakthrough opens new possibilities for solving complex optimization problems.</p>
+                            <div class="article-meta">
+                                <div class="article-date">
+                                    <span>May 25, 2026</span>
+                                </div>
+                                <span class="reading-time">6 min</span>
+                            </div>
+                        </article>
+
+                        <article class="article-card">
+                            <span class="article-category">ENGINEERING</span>
+                            <h3 class="article-title">Advanced Semiconductor Manufacturing</h3>
+                            <p class="article-excerpt">The latest innovations in 2nm chip fabrication are pushing the boundaries of what's possible in semiconductor engineering, promising significant performance gains.</p>
+                            <div class="article-meta">
+                                <div class="article-date">
+                                    <span>May 20, 2026</span>
+                                </div>
+                                <span class="reading-time">7 min</span>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <!-- SIDEBAR -->
+                <div>
+                    <div class="sidebar-section">
+                        <h3>Featured Topics</h3>
+                        <ul class="topic-list">
+                            <li class="topic-item">Artificial Intelligence</li>
+                            <li class="topic-item">Quantum Computing</li>
+                            <li class="topic-item">Chip Design</li>
+                            <li class="topic-item">Robotics</li>
+                            <li class="topic-item">Biotech</li>
+                            <li class="topic-item">Space Technology</li>
+                        </ul>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3>Subscribe to Updates</h3>
+                        <form class="newsletter-form">
+                            <input type="email" placeholder="Enter your email" required>
+                            <button type="submit">Subscribe</button>
+                        </form>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h3>Most Read</h3>
+                        <ul class="topic-list">
+                            <li class="topic-item">• GPT-5 Released: What's New?</li>
+                            <li class="topic-item">• The Future of Edge Computing</li>
+                            <li class="topic-item">• Quantum Cryptography Explained</li>
+                            <li class="topic-item">• Neural Interfaces: The Next Frontier</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MORE ARTICLES -->
+            <div class="articles-grid">
+                <article class="article-card">
+                    <span class="article-category">RESEARCH</span>
+                    <h3 class="article-title">Protein Folding Acceleration</h3>
+                    <p class="article-excerpt">New algorithms have dramatically reduced the time required for protein folding simulations, accelerating drug discovery and biological research.</p>
+                    <div class="article-meta">
+                        <div class="article-date">
+                            <span>May 18, 2026</span>
+                        </div>
+                        <span class="reading-time">5 min</span>
+                    </div>
+                </article>
+
+                <article class="article-card">
+                    <span class="article-category">AI & ML</span>
+                    <h3 class="article-title">Multimodal Models at Scale</h3>
+                    <p class="article-excerpt">Advances in multimodal AI allow machines to understand and generate content across text, images, audio, and video simultaneously with unprecedented accuracy.</p>
+                    <div class="article-meta">
+                        <div class="article-date">
+                            <span>May 15, 2026</span>
+                        </div>
+                        <span class="reading-time">9 min</span>
+                    </div>
+                </article>
+
+                <article class="article-card">
+                    <span class="article-category">ENGINEERING</span>
+                    <h3 class="article-title">Zero-Gravity Manufacturing</h3>
+                    <p class="article-excerpt">Space-based manufacturing facilities are opening new possibilities for creating ultra-pure materials and novel compounds impossible to produce on Earth.</p>
+                    <div class="article-meta">
+                        <div class="article-date">
+                            <span>May 12, 2026</span>
+                        </div>
+                        <span class="reading-time">6 min</span>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>About</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Careers</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Content</h4>
+                <ul>
+                    <li><a href="#">Latest Articles</a></li>
+                    <li><a href="#">Archive</a></li>
+                    <li><a href="#">Categories</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">Research Papers</a></li>
+                    <li><a href="#">Guides</a></li>
+                    <li><a href="#">Tools</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Follow</h4>
+                <ul>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">LinkedIn</a></li>
+                    <li><a href="#">GitHub</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 TechPulse. All rights reserved. | <a href="#" style="color: #a0a9b8;">Privacy</a> | <a href="#" style="color: #a0a9b8;">Terms</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Category badge filtering
+        document.querySelectorAll('.category-badge').forEach(badge => {
+            badge.addEventListener('click', function() {
+                document.querySelectorAll('.category-badge').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Add hover effects to cards
+        document.querySelectorAll('.article-card').forEach(card => {
+            card.addEventListener('click', function() {
+                console.log('Article clicked');
+            });
+        });
+    </script>
+</body>
+</html>
