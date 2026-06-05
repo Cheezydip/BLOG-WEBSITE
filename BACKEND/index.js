@@ -24,6 +24,7 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use('/api/posts', require('./routes/posts'));
+app.use('/api/ai', require('./routes/ai'));
 
 // Serve uploaded files
 const uploadsDir = path.join(__dirname, 'uploads')

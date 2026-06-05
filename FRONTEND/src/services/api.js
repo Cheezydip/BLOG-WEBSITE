@@ -13,6 +13,15 @@ export const blogService = {
     // If data is FormData, let axios set headers
     return api.post('/posts', data, config)
   },
+  generateAIStream: (payload) => {
+    return fetch(`${API_URL}/ai/generate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+  },
 };
 
 export default api;

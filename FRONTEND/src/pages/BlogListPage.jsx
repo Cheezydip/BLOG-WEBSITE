@@ -1,11 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import PostGrid from '../components/PostGrid'
 import initialPosts from '../data/posts'
 import { blogService } from '../services/api'
 
 const BlogListPage = () => {
   const [posts, setPosts] = useState(initialPosts)
-  const [loading, setLoading] = useState(true)
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All')
   const [sort, setSort] = useState('newest')
@@ -17,13 +16,14 @@ const BlogListPage = () => {
       try {
         const response = await blogService.getPosts()
         if (response.data && response.data.length > 0) {
-          setPosts(response.data)
+          // Merge backend posts with static posts, backend wins on slug collision
+          const backendSlugs = new Set(response.data.map((p) => p.slug))
+          const uniqueStatic = initialPosts.filter((p) => !backendSlugs.has(p.slug))
+          setPosts([...response.data, ...uniqueStatic])
         }
       } catch (err) {
         console.error('Failed to fetch posts from backend:', err)
         // Fallback to static posts
-      } finally {
-        setLoading(false)
       }
     }
     fetchPosts()
@@ -56,7 +56,7 @@ const BlogListPage = () => {
       label: value,
       count: value === 'All' ? posts.length : counts[value]
     }))
-  }, [])
+  }, [posts])
 
   const filtered = useMemo(() => {
     const matches = posts.filter((post) => {
@@ -78,7 +78,7 @@ const BlogListPage = () => {
     })
 
     return sorted
-  }, [query, category, sort])
+  }, [posts, query, category, sort])
 
   return (
     <div className="site-container">
