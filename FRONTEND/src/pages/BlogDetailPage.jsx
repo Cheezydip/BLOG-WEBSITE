@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import initialPosts from '../data/posts'
 import PostGrid from '../components/PostGrid'
@@ -87,7 +87,7 @@ const BlogDetailPage = () => {
         </div>
         <div className="post-detail-body">
           {post.content.split('\n').map((paragraph, index) => (
-            <p key={`${post._id || post.id}-p-${index}`}>{paragraph}</p>
+            <p key={`${post._id || post.id}-p-${index}`} dangerouslySetInnerHTML={{ __html: paragraph }} />
           ))}
         </div>
       </article>

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import HomeHero from '../components/HomeHero'
 import FeaturedPost from '../components/FeaturedPost'
 import PostGrid from '../components/PostGrid'
@@ -7,19 +7,18 @@ import { blogService } from '../services/api'
 
 const HomePage = () => {
   const [posts, setPosts] = useState(initialPosts)
-  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
         const res = await blogService.getPosts()
         if (res.data && res.data.length > 0) {
-          setPosts(res.data)
+          const backendSlugs = new Set(res.data.map((p) => p.slug))
+          const uniqueStatic = initialPosts.filter((p) => !backendSlugs.has(p.slug))
+          setPosts([...res.data, ...uniqueStatic])
         }
       } catch (err) {
         console.error('Home fetch failed:', err)
-      } finally {
-        setLoading(false)
       }
     }
     fetchPosts()
