@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom'
+import { getImageUrl } from '../utils/image'
 
 const PostCard = ({post}) => {
   return (
     <article className="post-card">
       <Link className="post-link" to={`/blog/${post.slug}`}>
         <div className="post-video-wrap video-corners">
-          <img src={post.image} alt={post.title} />
+          <img src={getImageUrl(post.image)} alt={post.title} />
           <div className="post-overlay"></div>
           <div className="plus-ctr">
             <div className="plus-circle">

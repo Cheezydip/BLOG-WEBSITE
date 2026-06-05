@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import HomeHero from '../components/HomeHero'
 import FeaturedPost from '../components/FeaturedPost'
 import PostGrid from '../components/PostGrid'
 import initialPosts from '../data/posts'
 import { blogService } from '../services/api'
+import { useAuth } from '../context/AuthContext'
 
 const HomePage = () => {
+  const { isAdmin } = useAuth()
   const [posts, setPosts] = useState(initialPosts)
 
   useEffect(() => {
@@ -82,10 +85,14 @@ const HomePage = () => {
       <PostGrid posts={grid} />
       <section className="cta-section">
         <div className="cta-card">
-          <p className="eyebrow">Create</p>
-          <h3>Share your next story</h3>
-          <p className="muted">Draft, preview, and publish with a calm, editorial workspace.</p>
-          <a className="btn primary" href="/new">Start a draft</a>
+          <p className="eyebrow">Want to Create?</p>
+          <h3>Share your next story with us.</h3>
+          <p className="muted">Let us draft, preview, and publish with a calm, editorial workspace.</p>
+          {isAdmin ? (
+            <Link className="btn primary" to="/new">Start a draft</Link>
+          ) : (
+            <a className="btn primary" href="mailto:admin@bloghub.com">Contact Admin</a>
+          )}
         </div>
         <div className="cta-card alt">
           <p className="eyebrow">Subscribe</p>

@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import initialPosts from '../data/posts'
 import PostGrid from '../components/PostGrid'
 import { blogService } from '../services/api'
+import { getImageUrl } from '../utils/image'
 
 const BlogDetailPage = () => {
   const { slug } = useParams()
@@ -83,7 +84,7 @@ const BlogDetailPage = () => {
           </div>
         </div>
         <div className="post-detail-media">
-          <img src={post.image} alt={post.title} />
+          <img src={getImageUrl(post.image)} alt={post.title} />
         </div>
         <div className="post-detail-body">
           {post.content.split('\n').map((paragraph, index) => (

@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 const HomeHero = () => {
+  const { isAdmin } = useAuth()
+
   return (
     <section className="hero">
       <div className="hero-copy">
@@ -13,9 +16,15 @@ const HomeHero = () => {
           <Link className="btn primary" to="/blog">
             Explore posts
           </Link>
-          <Link className="btn ghost" to="/new">
-            Start a draft
-          </Link>
+          {isAdmin ? (
+            <Link className="btn ghost" to="/new">
+              Start a draft
+            </Link>
+          ) : (
+            <a className="btn ghost" href="mailto:admin@bloghub.com">
+              Contact Admin
+            </a>
+          )}
         </div>
       </div>
       <div className="hero-panel">
