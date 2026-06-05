@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { blogService } from '../services/api'
+import { useAuth } from '../context/AuthContext'
 import initialPosts from '../data/posts'
 
 const AUTOSAVE_KEY = 'blog:currentDraft'
 
 const NewBlogPage = () => {
   const navigate = useNavigate()
+  const { token } = useAuth()
   const [formState, setFormState] = useState(() => {
     const defaultState = {
       title: '',
@@ -298,7 +300,7 @@ const NewBlogPage = () => {
       }
       attachments.forEach((file) => fd.append('attachments', file))
 
-      const resp = await blogService.createPost(fd)
+      const resp = await blogService.createPost(fd, token)
 
       // Persist to LocalStorage for fallback
       const slug = resp?.data?.slug || published.slug || Date.now()

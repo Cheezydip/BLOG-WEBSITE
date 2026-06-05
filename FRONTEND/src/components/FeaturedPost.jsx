@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom'
+import { getImageUrl } from '../utils/image'
 
 const FeaturedPost = ({post}) => {
   return (
     <section className="featured">
       <div className="featured-left">
-        <img src={post.image} alt={post.title} />
+        <img src={getImageUrl(post.image)} alt={post.title} />
       </div>
       <div className="featured-right">
         <div className="pill">{post.badge || 'Must Read'}</div>
