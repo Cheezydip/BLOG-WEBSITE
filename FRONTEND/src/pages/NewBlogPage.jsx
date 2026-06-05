@@ -138,7 +138,7 @@ const NewBlogPage = () => {
                     updated.tags = Array.isArray(data.tags) ? data.tags.join(', ') : data.tags
                   }
                   if (data.category && !prev.category) updated.category = data.category
-                  
+
                   if (data.title && !prev.slug) {
                     updated.slug = data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
                   }
@@ -464,7 +464,7 @@ const NewBlogPage = () => {
               <div className="cover-preview">
                 <img src={coverPreview} alt="Cover preview" />
                 <button type="button" className="cover-remove" onClick={removeCover} aria-label="Remove cover image">
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
                 </button>
               </div>
             ) : (
@@ -476,7 +476,7 @@ const NewBlogPage = () => {
                 onDrop={onCoverDrop}
               >
                 <div className="upload-zone-icon">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><polyline points="17 8 12 3 7 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /><polyline points="17 8 12 3 7 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /><line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
                 </div>
                 <p className="upload-zone-text">Drop an image here or <span>browse</span></p>
                 <p className="upload-zone-hint">JPG, PNG or WebP — max 5 MB</p>
@@ -496,7 +496,7 @@ const NewBlogPage = () => {
               onDrop={onAttachDrop}
             >
               <div className="upload-zone-icon small">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
               </div>
               <p className="upload-zone-text">Drop files or <span>browse</span></p>
             </div>
@@ -506,12 +506,12 @@ const NewBlogPage = () => {
                 {attachments.map((f, i) => (
                   <li key={i} className="attachment-item">
                     <div className="attachment-info">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><polyline points="14 2 14 8 20 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /><polyline points="14 2 14 8 20 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
                       <span className="attachment-name">{f.name}</span>
                       <span className="attachment-size">{Math.round(f.size / 1024)} KB</span>
                     </div>
                     <button type="button" className="attachment-remove" onClick={() => removeAttachment(i)} aria-label={`Remove ${f.name}`}>
-                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
                     </button>
                   </li>
                 ))}
@@ -519,59 +519,59 @@ const NewBlogPage = () => {
             )}
           </div>
           <div className="text-toolbar">
-            <button 
-              type="button" 
-              className="toolbar-btn" 
-              onMouseDown={(e) => { e.preventDefault(); handleFormat('<strong>', '</strong>'); }} 
+            <button
+              type="button"
+              className="toolbar-btn"
+              onMouseDown={(e) => { e.preventDefault(); handleFormat('<strong>', '</strong>'); }}
               title="Bold"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" /><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" /></svg>
             </button>
-            <button 
-              type="button" 
-              className="toolbar-btn" 
-              onMouseDown={(e) => { e.preventDefault(); handleFormat('<em>', '</em>'); }} 
+            <button
+              type="button"
+              className="toolbar-btn"
+              onMouseDown={(e) => { e.preventDefault(); handleFormat('<em>', '</em>'); }}
               title="Italic"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="4" x2="10" y2="4" /><line x1="14" y1="20" x2="5" y2="20" /><line x1="15" y1="4" x2="9" y2="20" /></svg>
             </button>
-            <button 
-              type="button" 
-              className="toolbar-btn" 
-              onMouseDown={(e) => { e.preventDefault(); handleFormat('<u>', '</u>'); }} 
+            <button
+              type="button"
+              className="toolbar-btn"
+              onMouseDown={(e) => { e.preventDefault(); handleFormat('<u>', '</u>'); }}
               title="Underline"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3" /><line x1="4" y1="21" x2="20" y2="21" /></svg>
             </button>
-            <button 
-              type="button" 
-              className="toolbar-btn" 
-              onMouseDown={(e) => { e.preventDefault(); handleFormat('<h3>', '</h3>'); }} 
+            <button
+              type="button"
+              className="toolbar-btn"
+              onMouseDown={(e) => { e.preventDefault(); handleFormat('<h3>', '</h3>'); }}
               title="Heading"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="4" x2="4" y2="20"/><line x1="20" y1="4" x2="20" y2="20"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="4" x2="4" y2="20" /><line x1="20" y1="4" x2="20" y2="20" /></svg>
             </button>
-            <button 
-              type="button" 
-              className="toolbar-btn" 
-              onMouseDown={(e) => { e.preventDefault(); handleFormat('<li>', '</li>'); }} 
+            <button
+              type="button"
+              className="toolbar-btn"
+              onMouseDown={(e) => { e.preventDefault(); handleFormat('<li>', '</li>'); }}
               title="List Item"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" /></svg>
             </button>
             <div className="toolbar-separator"></div>
-            <button 
-              type="button" 
-              className="toolbar-btn color-btn" 
-              onMouseDown={(e) => { e.preventDefault(); colorInputRef.current?.click(); }} 
+            <button
+              type="button"
+              className="toolbar-btn color-btn"
+              onMouseDown={(e) => { e.preventDefault(); colorInputRef.current?.click(); }}
               title="Text Color"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-4.3-7-11-7-11S5 10.7 5 15a7 7 0 0 0 7 7z"/></svg>
-              <input 
-                ref={colorInputRef} 
-                type="color" 
-                onChange={handleColorChange} 
-                style={{ position: 'absolute', width: 0, height: 0, opacity: 0, pointerEvents: 'none' }} 
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-4.3-7-11-7-11S5 10.7 5 15a7 7 0 0 0 7 7z" /></svg>
+              <input
+                ref={colorInputRef}
+                type="color"
+                onChange={handleColorChange}
+                style={{ position: 'absolute', width: 0, height: 0, opacity: 0, pointerEvents: 'none' }}
               />
             </button>
           </div>
@@ -625,26 +625,26 @@ const NewBlogPage = () => {
           <p className="eyebrow">Generate with AI</p>
           <h3>Kickstart your draft</h3>
           <p className="muted">Describe the idea and choose the tone/format for a first draft.</p>
-          
+
           <div className="ai-mode-btns">
-            <button 
-              type="button" 
+            <button
+              type="button"
               className={`ai-mode-btn ${aiMode === 'draft' ? 'active' : ''}`}
               onClick={() => setAiMode('draft')}
               disabled={aiStatus === 'generating'}
             >
               Full Draft
             </button>
-            <button 
-              type="button" 
+            <button
+              type="button"
               className={`ai-mode-btn ${aiMode === 'outline' ? 'active' : ''}`}
               onClick={() => setAiMode('outline')}
               disabled={aiStatus === 'generating'}
             >
               Outline
             </button>
-            <button 
-              type="button" 
+            <button
+              type="button"
               className={`ai-mode-btn ${aiMode === 'title' ? 'active' : ''}`}
               onClick={() => setAiMode('title')}
               disabled={aiStatus === 'generating'}
@@ -653,8 +653,8 @@ const NewBlogPage = () => {
             </button>
           </div>
 
-          <textarea 
-            className="input ai-textarea" 
+          <textarea
+            className="input ai-textarea"
             placeholder="What should this blog post be about? (e.g. A comparison of React Server Components vs client-side rendering)"
             value={aiPrompt}
             onChange={(e) => setAiPrompt(e.target.value)}
@@ -662,9 +662,9 @@ const NewBlogPage = () => {
           />
 
           <div className="ai-options-grid">
-            <select 
-              className="input" 
-              value={aiTone} 
+            <select
+              className="input"
+              value={aiTone}
               onChange={(e) => setAiTone(e.target.value)}
               disabled={aiStatus === 'generating'}
             >
@@ -673,11 +673,11 @@ const NewBlogPage = () => {
               <option value="Educational">Educational</option>
               <option value="Opinionated">Opinionated</option>
             </select>
-            
+
             {aiMode !== 'title' && (
-              <select 
-                className="input" 
-                value={aiLength} 
+              <select
+                className="input"
+                value={aiLength}
                 onChange={(e) => setAiLength(e.target.value)}
                 disabled={aiStatus === 'generating'}
               >
@@ -705,8 +705,8 @@ const NewBlogPage = () => {
             </div>
           )}
 
-          <button 
-            className={`btn primary ai-gen-btn ${aiStatus === 'generating' ? 'ai-generating' : ''}`} 
+          <button
+            className={`btn primary ai-gen-btn ${aiStatus === 'generating' ? 'ai-generating' : ''}`}
             type="button"
             onClick={handleGenerateClick}
             disabled={!aiPrompt.trim() || aiStatus === 'generating'}
