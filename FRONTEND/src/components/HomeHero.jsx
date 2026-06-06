@@ -7,10 +7,10 @@ const HomeHero = () => {
   return (
     <section className="hero">
       <div className="hero-copy">
-        <span className="hero-badge">Editorial Studio</span>
-        <h1 className="hero-title">Behind the lens, beyond the routine.</h1>
+        <span className="hero-badge">Adventure Journal</span>
+        <h1 className="hero-title">Conquer the peaks, discover the trails.</h1>
         <p className="hero-sub">
-          Stories, gear notes, and creative workflows from photographers pushing their craft.
+          Guides, trekking notes, and travel stories from explorers pushing their boundaries.
         </p>
         <div className="hero-actions">
           <Link className="btn primary" to="/blog">

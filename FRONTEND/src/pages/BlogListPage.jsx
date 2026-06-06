@@ -1,12 +1,24 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import PostGrid from '../components/PostGrid'
 import initialPosts from '../data/posts'
 import { blogService } from '../services/api'
 
 const BlogListPage = () => {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const category = searchParams.get('category') || 'All'
+
+  const setCategory = (newCat) => {
+    if (newCat === 'All') {
+      searchParams.delete('category')
+    } else {
+      searchParams.set('category', newCat)
+    }
+    setSearchParams(searchParams)
+  }
+
   const [posts, setPosts] = useState(initialPosts)
   const [query, setQuery] = useState('')
-  const [category, setCategory] = useState('All')
   const [sort, setSort] = useState('newest')
   const [isSortOpen, setIsSortOpen] = useState(false)
   const sortRef = useRef(null)
@@ -17,9 +29,10 @@ const BlogListPage = () => {
         const response = await blogService.getPosts()
         if (response.data && response.data.length > 0) {
           // Merge backend posts with static posts, backend wins on slug collision
-          const backendSlugs = new Set(response.data.map((p) => p.slug))
-          const uniqueStatic = initialPosts.filter((p) => !backendSlugs.has(p.slug))
-          setPosts([...response.data, ...uniqueStatic])
+          const publishedBackend = response.data.filter((p) => p.status !== 'draft')
+          const backendSlugs = new Set(publishedBackend.map((p) => p.slug))
+          const uniqueStatic = initialPosts.filter((p) => !backendSlugs.has(p.slug) && p.status !== 'draft')
+          setPosts([...publishedBackend, ...uniqueStatic])
         }
       } catch (err) {
         console.error('Failed to fetch posts from backend:', err)

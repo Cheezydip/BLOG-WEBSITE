@@ -16,9 +16,10 @@ const HomePage = () => {
       try {
         const res = await blogService.getPosts()
         if (res.data && res.data.length > 0) {
-          const backendSlugs = new Set(res.data.map((p) => p.slug))
-          const uniqueStatic = initialPosts.filter((p) => !backendSlugs.has(p.slug))
-          setPosts([...res.data, ...uniqueStatic])
+          const publishedBackend = res.data.filter(p => p.status !== 'draft')
+          const backendSlugs = new Set(publishedBackend.map((p) => p.slug))
+          const uniqueStatic = initialPosts.filter((p) => !backendSlugs.has(p.slug) && p.status !== 'draft')
+          setPosts([...publishedBackend, ...uniqueStatic])
         }
       } catch (err) {
         console.error('Home fetch failed:', err)
@@ -65,13 +66,17 @@ const HomePage = () => {
         </div>
         <div className="category-grid">
           {categories.map((item) => (
-            <article key={item.label} className="category-card">
+            <Link 
+              key={item.label} 
+              to={`/blog?category=${encodeURIComponent(item.label)}`} 
+              className="category-card"
+            >
               <img src={item.image} alt={item.label} />
               <div className="category-card-body">
                 <h3>{item.label}</h3>
                 <p className="muted">{item.count} stories</p>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       </section>
@@ -97,7 +102,7 @@ const HomePage = () => {
         <div className="cta-card alt">
           <p className="eyebrow">Subscribe</p>
           <h3>Get the weekly edit</h3>
-          <p className="muted">Notes on photography, storytelling, and the creative business.</p>
+          <p className="muted">Notes on trekking, trail guides, and the explorer's mindset.</p>
           <button className="btn ghost" type="button">Join newsletter</button>
         </div>
       </section>
