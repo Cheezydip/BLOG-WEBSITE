@@ -38,7 +38,7 @@ const LoginPage = () => {
       <div className="login-card">
         {/* Logo/Brand */}
         <div className="login-brand">
-          <Link to="/" className="login-brand-name">Lenscraft</Link>
+          <Link to="/" className="login-brand-name">TravelHub</Link>
           <p className="login-brand-sub">Admin Portal</p>
         </div>
 

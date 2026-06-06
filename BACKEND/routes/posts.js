@@ -144,7 +144,7 @@ router.put('/:slug', verifyToken, uploadFields, async (req, res) => {
     const post = await Post.findOneAndUpdate(
       { slug: req.params.slug },
       { $set: updates },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     )
 
     if (!post) return res.status(404).json({ message: 'Post not found' })
@@ -183,7 +183,7 @@ router.patch('/:slug/status', verifyToken, async (req, res) => {
     const post = await Post.findOneAndUpdate(
       { slug: req.params.slug },
       { $set: updates },
-      { new: true }
+      { returnDocument: 'after' }
     )
 
     if (!post) return res.status(404).json({ message: 'Post not found' })

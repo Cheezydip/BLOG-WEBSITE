@@ -6,32 +6,46 @@ const SiteHeader = () => {
   const { isAdmin, admin, logout } = useAuth()
   const navigate = useNavigate()
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
   const dropdownRef = useRef(null)
+  const mobileRef = useRef(null)
 
   // Close dropdown on outside click
   useEffect(() => {
     const handler = (e) => {
+      // Ignore clicks on the hamburger button since its onClick handles the toggle
+      if (e.target.closest('.nav-hamburger')) return
+
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setDropdownOpen(false)
+      }
+      if (mobileRef.current && !mobileRef.current.contains(e.target)) {
+        setMobileOpen(false)
       }
     }
     document.addEventListener('mousedown', handler)
     return () => document.removeEventListener('mousedown', handler)
   }, [])
 
+  // Close mobile menu on route change
+  const closeMobile = () => setMobileOpen(false)
+
   const handleLogout = () => {
     setDropdownOpen(false)
+    setMobileOpen(false)
     logout()
     navigate('/')
   }
 
   return (
     <header className="site-nav">
-      <div className="site-container nav-inner">
+      <div className="nav-inner-wrap">
         <Link to="/" className="brand">
-          Lenscraft
+          TravelHub
         </Link>
-        <nav className="nav-links">
+
+        {/* Desktop Nav */}
+        <nav className="nav-links nav-links-desktop">
           <NavLink to="/" end className={({ isActive }) => (isActive ? 'active' : undefined)}>
             Home
           </NavLink>
@@ -40,7 +54,6 @@ const SiteHeader = () => {
           </NavLink>
 
           {isAdmin ? (
-            /* ── Admin logged-in state ── */
             <div className="nav-admin-menu" ref={dropdownRef}>
               <button
                 id="admin-avatar-btn"
@@ -107,7 +120,6 @@ const SiteHeader = () => {
               )}
             </div>
           ) : (
-            /* ── Guest state ── */
             <Link to="/login" id="admin-login-btn" className="nav-cta nav-login-btn">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/>
@@ -116,7 +128,40 @@ const SiteHeader = () => {
             </Link>
           )}
         </nav>
+
+        {/* Hamburger Button — mobile only */}
+        <button
+          className={`nav-hamburger ${mobileOpen ? 'open' : ''}`}
+          aria-label="Toggle menu"
+          aria-expanded={mobileOpen}
+          onClick={() => setMobileOpen(v => !v)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
       </div>
+
+      {/* Mobile Drawer */}
+      {mobileOpen && (
+        <nav className="nav-mobile-drawer" ref={mobileRef}>
+          <NavLink to="/" end className={({ isActive }) => (isActive ? 'active' : undefined)} onClick={closeMobile}>
+            Home
+          </NavLink>
+          <NavLink to="/blog" className={({ isActive }) => (isActive ? 'active' : undefined)} onClick={closeMobile}>
+            Blog
+          </NavLink>
+          {isAdmin ? (
+            <>
+              <Link to="/admin" className="nav-mobile-link" onClick={closeMobile}>Dashboard</Link>
+              <Link to="/new" className="nav-mobile-link" onClick={closeMobile}>New Post</Link>
+              <button className="nav-mobile-link nav-mobile-logout" onClick={handleLogout}>Logout</button>
+            </>
+          ) : (
+            <Link to="/login" className="nav-mobile-link nav-mobile-cta" onClick={closeMobile}>Admin Login</Link>
+          )}
+        </nav>
+      )}
     </header>
   )
 }

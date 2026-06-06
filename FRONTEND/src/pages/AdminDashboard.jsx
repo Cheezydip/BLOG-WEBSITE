@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { blogService } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 
@@ -18,6 +18,22 @@ const AdminDashboard = () => {
   const [actionMsg, setActionMsg] = useState(null)
   const [filter, setFilter] = useState('all') // 'all' | 'published' | 'draft'
   const [search, setSearch] = useState('')
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const mobileRef = useRef(null)
+
+  // Close mobile drawer on outside click
+  useEffect(() => {
+    const handler = (e) => {
+      // Ignore clicks on the hamburger button since its onClick handles the toggle
+      if (e.target.closest('.nav-hamburger')) return
+
+      if (mobileRef.current && !mobileRef.current.contains(e.target)) {
+        setMobileOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
 
   const fetchPosts = async () => {
     setLoading(true)
@@ -80,12 +96,19 @@ const AdminDashboard = () => {
     <div className="admin-page">
       {/* Header */}
       <div className="admin-header">
-        <div className="admin-header-inner site-container">
+        <div className="admin-header-inner site-container nav-inner-wrap">
           <div className="admin-header-left">
-            <Link to="/" className="admin-brand">Lenscraft</Link>
+            <Link to="/" className="admin-brand">TravelHub</Link>
             <span className="admin-breadcrumb">/ Admin</span>
           </div>
-          <div className="admin-header-right">
+
+          <div className="admin-header-right nav-links-desktop">
+            <NavLink to="/" end className={({ isActive }) => (isActive ? 'active' : undefined)}>
+              Home
+            </NavLink>
+            <NavLink to="/blog" className={({ isActive }) => (isActive ? 'active' : undefined)}>
+              Blog
+            </NavLink>
             <span className="admin-greeting">
               <span className="admin-avatar">{admin?.email?.[0]?.toUpperCase() || 'A'}</span>
               {admin?.email}
@@ -101,8 +124,35 @@ const AdminDashboard = () => {
               Logout
             </button>
           </div>
+
+          {/* Hamburger Button — mobile only */}
+          <button
+            className={`nav-hamburger ${mobileOpen ? 'open' : ''}`}
+            aria-label="Toggle menu"
+            aria-expanded={mobileOpen}
+            onClick={() => setMobileOpen(v => !v)}
+          >
+            <span />
+            <span />
+            <span />
+          </button>
         </div>
       </div>
+
+      {/* Mobile Drawer */}
+      {mobileOpen && (
+        <nav className="nav-mobile-drawer" ref={mobileRef}>
+          <Link to="/" className="nav-mobile-link" onClick={() => setMobileOpen(false)}>Home</Link>
+          <Link to="/blog" className="nav-mobile-link" onClick={() => setMobileOpen(false)}>Blog</Link>
+          <Link to="/new" className="nav-mobile-link" onClick={() => setMobileOpen(false)}>New Post</Link>
+          <button
+            className="nav-mobile-link nav-mobile-logout"
+            onClick={() => { setMobileOpen(false); logout(); navigate('/'); }}
+          >
+            Logout
+          </button>
+        </nav>
+      )}
 
       <div className="site-container admin-content">
         {/* Page Title */}
@@ -181,7 +231,8 @@ const AdminDashboard = () => {
           </div>
         ) : (
           <div className="admin-table-wrap">
-            <table className="admin-table">
+            {/* Desktop table */}
+            <table className="admin-table admin-table-desktop">
               <thead>
                 <tr>
                   <th>Title</th>
@@ -223,7 +274,6 @@ const AdminDashboard = () => {
                       <td className="admin-date-cell">{date}</td>
                       <td>
                         <div className="admin-actions">
-                          {/* Toggle publish/draft */}
                           <button
                             className={`admin-action-btn ${post.status === 'published' ? 'draft-btn' : 'publish-btn'}`}
                             title={post.status === 'published' ? 'Move to Draft' : 'Publish'}
@@ -240,7 +290,6 @@ const AdminDashboard = () => {
                             )}
                             {post.status === 'published' ? 'Unpublish' : 'Publish'}
                           </button>
-                          {/* Edit */}
                           <button
                             className="admin-action-btn edit-btn"
                             title="Edit post"
@@ -251,7 +300,6 @@ const AdminDashboard = () => {
                             </svg>
                             Edit
                           </button>
-                          {/* Delete */}
                           <button
                             className="admin-action-btn delete-btn"
                             title="Delete post"
@@ -269,6 +317,75 @@ const AdminDashboard = () => {
                 })}
               </tbody>
             </table>
+
+            {/* Mobile cards */}
+            <div className="admin-post-cards">
+              {filteredPosts.map(post => {
+                const statusStyle = STATUS_COLORS[post.status] || STATUS_COLORS.draft
+                const date = post.publishedAt
+                  ? new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                  : new Date(post.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+
+                return (
+                  <div key={post._id} className="admin-post-card">
+                    <div className="admin-post-card-top">
+                      <div className="admin-post-card-meta">
+                        <span
+                          className="admin-status-badge"
+                          style={{ background: statusStyle.bg, color: statusStyle.text }}
+                        >
+                          <span className="admin-status-dot" style={{ background: statusStyle.dot }} />
+                          {post.status}
+                        </span>
+                        {post.category && (
+                          <span className="admin-category-chip">{post.category}</span>
+                        )}
+                      </div>
+                      <span className="admin-date-cell">{date}</span>
+                    </div>
+                    <Link to={`/blog/${post.slug}`} className="admin-post-link admin-post-card-title" target="_blank">
+                      {post.title}
+                    </Link>
+                    <span className="admin-post-author">{post.author || 'Anonymous'}</span>
+                    <div className="admin-actions admin-post-card-actions">
+                      <button
+                        className={`admin-action-btn ${post.status === 'published' ? 'draft-btn' : 'publish-btn'}`}
+                        onClick={() => handleToggleStatus(post)}
+                      >
+                        {post.status === 'published' ? (
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                          </svg>
+                        ) : (
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12"/>
+                          </svg>
+                        )}
+                        {post.status === 'published' ? 'Unpublish' : 'Publish'}
+                      </button>
+                      <button
+                        className="admin-action-btn edit-btn"
+                        onClick={() => navigate(`/admin/edit/${post.slug}`)}
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                        </svg>
+                        Edit
+                      </button>
+                      <button
+                        className="admin-action-btn delete-btn"
+                        onClick={() => setDeleteConfirm(post.slug)}
+                      >
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+                        </svg>
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
           </div>
         )}
       </div>

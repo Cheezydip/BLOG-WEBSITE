@@ -2,8 +2,8 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 
 const AuthContext = createContext(null)
 
-const TOKEN_KEY = 'lenscraft:admin:token'
-const ADMIN_KEY = 'lenscraft:admin:info'
+const TOKEN_KEY = 'travelhub:admin:token'
+const ADMIN_KEY = 'travelhub:admin:info'
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(() => localStorage.getItem(TOKEN_KEY))

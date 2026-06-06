@@ -215,19 +215,74 @@ const NewBlogPage = () => {
     handleFormat(`<span style="color: ${selectedColor}">`, '</span>')
   }
 
-  const handleSaveDraft = () => {
-    setSaveState('saving')
-    const payload = { ...formState, _savedAt: new Date().toISOString() }
-    try {
-      localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(payload))
-      setTimeout(() => {
-        setSaveState('saved')
-        setLastSavedAt(payload._savedAt)
-        setErrorMsg(null)
-      }, 600)
-    } catch (e) {
+  const handleSaveDraft = async () => {
+    // basic client-side validation
+    if (!formState.title || !formState.content) {
       setSaveState('error')
-      setErrorMsg(e.message || 'Failed to save draft locally')
+      setErrorMsg('Title and content are required to save draft')
+      return
+    }
+
+    setSaveState('saving')
+
+    // Auto-pick a color if possible
+    const colors = {
+      'Photography': '#1f3c2f',
+      'Editing': '#2c3e50',
+      'Gear': '#d35400',
+      'Travel': '#2980b9'
+    }
+    const category_color = colors[formState.category] || '#1f3c2f'
+
+    // Estimate reading time
+    const wordCount = formState.content.trim().split(/\s+/).length
+    const readingTime = `${Math.max(1, Math.ceil(wordCount / 200))} min read`
+
+    const draft = {
+      ...formState,
+      status: 'draft',
+      category_color,
+      readingTime,
+      image: '/src/assets/blog_pic_1.png',
+      tags: formState.tags.split(',').map((t) => t.trim()).filter(Boolean)
+    }
+
+    try {
+      // Always use FormData so we can attach cover image + attachments
+      const fd = new FormData()
+      Object.entries(draft).forEach(([k, v]) => {
+        if (Array.isArray(v)) {
+          fd.append(k, v.join(','))
+        } else {
+          fd.append(k, v === undefined || v === null ? '' : v)
+        }
+      })
+      if (coverImage) {
+        fd.append('coverImage', coverImage)
+      }
+      attachments.forEach((file) => fd.append('attachments', file))
+
+      const resp = await blogService.createPost(fd, token)
+
+      // Persist to LocalStorage for fallback
+      const slug = resp?.data?.slug || draft.slug || Date.now()
+      const key = `blog:published:${slug}`
+      localStorage.setItem(key, JSON.stringify(resp.data || draft))
+
+      // Clear draft locally
+      localStorage.removeItem(AUTOSAVE_KEY)
+
+      setSaveState('saved')
+      setErrorMsg(null)
+
+      // Navigate to the admin dashboard after a brief moment
+      setTimeout(() => {
+        navigate('/admin')
+      }, 1000)
+    } catch (e) {
+      console.error('Save draft error:', e)
+      setSaveState('error')
+      setErrorMsg(e?.response?.data?.message || e.message || 'Save draft failed')
     }
   }
 
@@ -655,7 +710,7 @@ const NewBlogPage = () => {
 
           <textarea
             className="input ai-textarea"
-            placeholder="What should this blog post be about? (e.g. A comparison of React Server Components vs client-side rendering)"
+            placeholder="What should this blog post be about?"
             value={aiPrompt}
             onChange={(e) => setAiPrompt(e.target.value)}
             disabled={aiStatus === 'generating'}
