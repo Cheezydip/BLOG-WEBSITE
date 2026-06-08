@@ -31,6 +31,115 @@ const EditBlogPage = () => {
   const textareaRef = useRef(null)
   const colorInputRef = useRef(null)
 
+  // AI Panel States
+  const [aiPrompt, setAiPrompt] = useState('')
+  const [aiTone, setAiTone] = useState('Professional')
+  const [aiLength, setAiLength] = useState('Medium')
+  const [aiMode, setAiMode] = useState('draft') // 'draft', 'outline', 'title'
+  const [aiStatus, setAiStatus] = useState('idle') // 'idle', 'generating', 'done', 'error'
+  const [aiError, setAiError] = useState(null)
+  const [showAIConfirm, setShowAIConfirm] = useState(false)
+
+  const handleConfirmApply = (applyMode) => {
+    setShowAIConfirm(false)
+    handleGenerate(applyMode)
+  }
+
+  const handleGenerateClick = () => {
+    if (!aiPrompt.trim()) return
+
+    if (formState.content.trim()) {
+      setShowAIConfirm(true)
+    } else {
+      handleGenerate('replace')
+    }
+  }
+
+  const handleGenerate = async (applyMode) => {
+    setAiStatus('generating')
+    setAiError(null)
+
+    const shouldAppend = applyMode === 'append'
+    let currentContent = shouldAppend ? formState.content + '\n\n' : ''
+
+    setFormState((prev) => ({
+      ...prev,
+      content: currentContent
+    }))
+
+    try {
+      const response = await blogService.generateAIStream({
+        prompt: aiPrompt,
+        tone: aiTone,
+        length: aiLength,
+        mode: aiMode
+      })
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}))
+        throw new Error(errData.message || `Server error: ${response.status}`)
+      }
+
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder('utf-8')
+      let buffer = ''
+
+      while (true) {
+        const { value, done } = await reader.read()
+        if (done) break
+
+        buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split('\n')
+        buffer = lines.pop() || ''
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const dataStr = line.substring(6).trim()
+            if (!dataStr) continue
+
+            try {
+              const data = JSON.parse(dataStr)
+              if (data.type === 'content') {
+                currentContent += data.text
+                setFormState((prev) => ({
+                  ...prev,
+                  content: currentContent
+                }))
+              } else if (data.type === 'done') {
+                setFormState((prev) => {
+                  const updated = { ...prev }
+                  if (data.title && !prev.title) updated.title = data.title
+                  if (data.excerpt && !prev.excerpt) updated.excerpt = data.excerpt
+                  if (data.tags && !prev.tags) {
+                    updated.tags = Array.isArray(data.tags) ? data.tags.join(', ') : data.tags
+                  }
+                  if (data.category && !prev.category) updated.category = data.category
+
+                  if (data.title && !prev.slug) {
+                    updated.slug = data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+                  }
+                  return updated
+                })
+                setAiStatus('done')
+              } else if (data.type === 'error') {
+                throw new Error(data.message || 'AI Generation failed')
+              }
+            } catch (e) {
+              console.error('Error parsing SSE line:', e, line)
+              if (dataStr.includes('"type":"error"')) {
+                throw e
+              }
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Streaming error:', error)
+      setAiStatus('error')
+      setAiError(error.message || 'Failed to generate content. Please try again.')
+    }
+  }
+
   // Load existing post
   useEffect(() => {
     const fetchPost = async () => {
@@ -289,6 +398,112 @@ const EditBlogPage = () => {
             ))}
           </div>
         </section>
+
+        <aside className="ai-panel">
+          <p className="eyebrow">Generate with AI</p>
+          <h3>Kickstart your draft</h3>
+          <p className="muted">Describe the idea and choose the tone/format for a first draft.</p>
+
+          <div className="ai-mode-btns">
+            <button
+              type="button"
+              className={`ai-mode-btn ${aiMode === 'draft' ? 'active' : ''}`}
+              onClick={() => setAiMode('draft')}
+              disabled={aiStatus === 'generating'}
+            >
+              Full Draft
+            </button>
+            <button
+              type="button"
+              className={`ai-mode-btn ${aiMode === 'outline' ? 'active' : ''}`}
+              onClick={() => setAiMode('outline')}
+              disabled={aiStatus === 'generating'}
+            >
+              Outline
+            </button>
+            <button
+              type="button"
+              className={`ai-mode-btn ${aiMode === 'title' ? 'active' : ''}`}
+              onClick={() => setAiMode('title')}
+              disabled={aiStatus === 'generating'}
+            >
+              Titles
+            </button>
+          </div>
+
+          <textarea
+            className="input ai-textarea"
+            placeholder="What should this blog post be about?"
+            value={aiPrompt}
+            onChange={(e) => setAiPrompt(e.target.value)}
+            disabled={aiStatus === 'generating'}
+          />
+
+          <div className="ai-options-grid">
+            <select
+              className="input"
+              value={aiTone}
+              onChange={(e) => setAiTone(e.target.value)}
+              disabled={aiStatus === 'generating'}
+            >
+              <option value="Professional">Professional</option>
+              <option value="Casual">Casual</option>
+              <option value="Educational">Educational</option>
+              <option value="Opinionated">Opinionated</option>
+            </select>
+
+            {aiMode !== 'title' && (
+              <select
+                className="input"
+                value={aiLength}
+                onChange={(e) => setAiLength(e.target.value)}
+                disabled={aiStatus === 'generating'}
+              >
+                <option value="Short">Short (~300 words)</option>
+                <option value="Medium">Medium (~600 words)</option>
+                <option value="Long">Long (~1000 words)</option>
+              </select>
+            )}
+          </div>
+
+          {showAIConfirm && (
+            <div className="ai-confirm-bar">
+              <p className="ai-confirm-text">Your draft already has content. Choose how to apply:</p>
+              <div className="ai-confirm-actions">
+                <button type="button" className="btn btn-sm" onClick={() => handleConfirmApply('append')}>
+                  Append
+                </button>
+                <button type="button" className="btn btn-sm danger" onClick={() => handleConfirmApply('replace')}>
+                  Overwrite
+                </button>
+                <button type="button" className="btn btn-sm ghost" onClick={() => setShowAIConfirm(false)}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          <button
+            className={`btn primary ai-gen-btn ${aiStatus === 'generating' ? 'ai-generating' : ''}`}
+            type="button"
+            onClick={handleGenerateClick}
+            disabled={!aiPrompt.trim() || aiStatus === 'generating'}
+          >
+            {aiStatus === 'generating' ? 'Generating...' : 'Generate with AI'}
+          </button>
+
+          {aiStatus === 'done' && (
+            <div className="ai-status-msg success">
+              ✓ Generation completed successfully!
+            </div>
+          )}
+
+          {aiStatus === 'error' && (
+            <div className="ai-status-msg error">
+              ✕ {aiError}
+            </div>
+          )}
+        </aside>
       </div>
     </div>
   )
