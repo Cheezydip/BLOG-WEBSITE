@@ -28,6 +28,7 @@ const EditBlogPage = () => {
   const [errorMsg, setErrorMsg] = useState(null)
   const [coverImage, setCoverImage] = useState(null)
   const [coverPreview, setCoverPreview] = useState(null)
+  const [coverDragActive, setCoverDragActive] = useState(false)
   const [attachDragActive, setAttachDragActive] = useState(false)
   const coverInputRef = useRef(null)
 
@@ -183,11 +184,18 @@ const EditBlogPage = () => {
     }
   }
 
-  const removeCover = () => {
-    setCoverImage(null)
-    if (coverPreview && coverPreview.startsWith('blob:')) URL.revokeObjectURL(coverPreview)
-    setCoverPreview(null)
-    if (coverInputRef.current) coverInputRef.current.value = ''
+  const removeCover = (e) => {
+    try {
+      if (e) { e.preventDefault(); e.stopPropagation(); }
+      setCoverImage(null)
+      if (coverPreview && typeof coverPreview === 'string' && coverPreview.startsWith('blob:')) {
+        URL.revokeObjectURL(coverPreview)
+      }
+      setCoverPreview(null)
+      if (coverInputRef.current) coverInputRef.current.value = ''
+    } catch (err) {
+      alert("Error in removeCover: " + err.message + "\n" + err.stack)
+    }
   }
 
   const onCoverDragOver = useCallback((e) => { e.preventDefault(); setCoverDragActive(true) }, [])
