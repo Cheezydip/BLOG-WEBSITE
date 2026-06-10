@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import ReactQuill from 'react-quill-new'
+import 'react-quill-new/dist/quill.snow.css'
 import { blogService } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import initialPosts from '../data/posts'
@@ -26,10 +28,8 @@ const EditBlogPage = () => {
   const [errorMsg, setErrorMsg] = useState(null)
   const [coverImage, setCoverImage] = useState(null)
   const [coverPreview, setCoverPreview] = useState(null)
-  const [coverDragActive, setCoverDragActive] = useState(false)
+  const [attachDragActive, setAttachDragActive] = useState(false)
   const coverInputRef = useRef(null)
-  const textareaRef = useRef(null)
-  const colorInputRef = useRef(null)
 
   // AI Panel States
   const [aiPrompt, setAiPrompt] = useState('')
@@ -48,7 +48,8 @@ const EditBlogPage = () => {
   const handleGenerateClick = () => {
     if (!aiPrompt.trim()) return
 
-    if (formState.content.trim()) {
+    const hasTextContent = formState.content.replace(/<[^>]*>/g, '').trim()
+    if (hasTextContent) {
       setShowAIConfirm(true)
     } else {
       handleGenerate('replace')
@@ -100,7 +101,8 @@ const EditBlogPage = () => {
             try {
               const data = JSON.parse(dataStr)
               if (data.type === 'content') {
-                currentContent += data.text
+                const formattedChunk = data.text.replace(/\n/g, '<br>')
+                currentContent += formattedChunk
                 setFormState((prev) => ({
                   ...prev,
                   content: currentContent
@@ -172,25 +174,6 @@ const EditBlogPage = () => {
     setFormState(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleFormat = (startTag, endTag) => {
-    const textarea = textareaRef.current
-    if (!textarea) return
-    const start = textarea.selectionStart
-    const end = textarea.selectionEnd
-    const text = formState.content
-    const selected = text.substring(start, end)
-    const replacement = `${startTag}${selected}${endTag}`
-    const newContent = text.substring(0, start) + replacement + text.substring(end)
-    setFormState(prev => ({ ...prev, content: newContent }))
-    setTimeout(() => {
-      textarea.focus()
-      textarea.setSelectionRange(start + startTag.length, start + startTag.length + selected.length)
-    }, 0)
-  }
-
-  const handleColorChange = (e) => {
-    handleFormat(`<span style="color: ${e.target.value}">`, '</span>')
-  }
 
   const handleCoverChange = (e) => {
     const file = e.target.files?.[0]
@@ -218,10 +201,7 @@ const EditBlogPage = () => {
     }
   }, [])
 
-  const previewParagraphs = useMemo(() => {
-    if (!formState.content.trim()) return ['Your draft preview will appear here as you write.']
-    return formState.content.split('\n').filter(l => l.trim().length)
-  }, [formState.content])
+
 
   const categoryOptions = useMemo(() => {
     const cats = new Set(initialPosts.map(p => p.category).filter(Boolean))
@@ -342,28 +322,24 @@ const EditBlogPage = () => {
             <input ref={coverInputRef} type="file" accept="image/*" onChange={handleCoverChange} hidden />
           </div>
 
-          {/* Toolbar */}
-          <div className="text-toolbar">
-            <button type="button" className="toolbar-btn" onMouseDown={e => { e.preventDefault(); handleFormat('<strong>', '</strong>') }} title="Bold">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/></svg>
-            </button>
-            <button type="button" className="toolbar-btn" onMouseDown={e => { e.preventDefault(); handleFormat('<em>', '</em>') }} title="Italic">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg>
-            </button>
-            <button type="button" className="toolbar-btn" onMouseDown={e => { e.preventDefault(); handleFormat('<u>', '</u>') }} title="Underline">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg>
-            </button>
-            <button type="button" className="toolbar-btn" onMouseDown={e => { e.preventDefault(); handleFormat('<h3>', '</h3>') }} title="Heading">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="4" x2="4" y2="20"/><line x1="20" y1="4" x2="20" y2="20"/></svg>
-            </button>
-            <div className="toolbar-separator" />
-            <button type="button" className="toolbar-btn color-btn" onMouseDown={e => { e.preventDefault(); colorInputRef.current?.click() }} title="Text Color">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-4.3-7-11-7-11S5 10.7 5 15a7 7 0 0 0 7 7z"/></svg>
-              <input ref={colorInputRef} type="color" onChange={handleColorChange} style={{ position: 'absolute', width: 0, height: 0, opacity: 0, pointerEvents: 'none' }} />
-            </button>
+          {/* Toolbar & Editor */}
+          <div className="editor-container">
+            <ReactQuill
+              theme="snow"
+              value={formState.content}
+              onChange={(value) => setFormState(prev => ({ ...prev, content: value }))}
+              placeholder="Start writing your story..."
+              modules={{
+                toolbar: [
+                  [{ 'header': [2, 3, false] }],
+                  ['bold', 'italic', 'underline'],
+                  [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                  [{ 'color': [] }],
+                  ['clean']
+                ],
+              }}
+            />
           </div>
-          <textarea ref={textareaRef} className="textarea" name="content" value={formState.content} onChange={handleChange} placeholder="Write your story..." />
-
           <div className="editor-actions">
             <div className="save-status">
               {saveState === 'saving' && <span className="status-saving">● Saving…</span>}
@@ -393,9 +369,11 @@ const EditBlogPage = () => {
             <span>{formState.tags || 'No tags'}</span>
           </div>
           <div className="preview-body">
-            {previewParagraphs.map((p, i) => (
-              <p key={i} dangerouslySetInnerHTML={{ __html: p }} />
-            ))}
+            {formState.content ? (
+              <div className="quill-preview" dangerouslySetInnerHTML={{ __html: formState.content }} />
+            ) : (
+              <p>Your draft preview will appear here as you write.</p>
+            )}
           </div>
         </section>
 

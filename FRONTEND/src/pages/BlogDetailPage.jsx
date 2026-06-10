@@ -86,10 +86,14 @@ const BlogDetailPage = () => {
         <div className="post-detail-media">
           <img src={getImageUrl(post.image)} alt={post.title} />
         </div>
-        <div className="post-detail-body">
-          {post.content.split('\n').map((paragraph, index) => (
-            <p key={`${post._id || post.id}-p-${index}`} dangerouslySetInnerHTML={{ __html: paragraph }} />
-          ))}
+        <div className="post-detail-body quill-preview">
+          {(post.content || '').includes('<p>') ? (
+            <div dangerouslySetInnerHTML={{ __html: post.content || '' }} />
+          ) : (
+            (post.content || '').split('\n').map((paragraph, index) => (
+              <p key={`${post._id || post.id}-p-${index}`} dangerouslySetInnerHTML={{ __html: paragraph }} />
+            ))
+          )}
         </div>
       </article>
       <section className="related">

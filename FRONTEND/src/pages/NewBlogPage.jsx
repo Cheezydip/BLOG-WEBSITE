@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import ReactQuill from 'react-quill-new'
+import 'react-quill-new/dist/quill.snow.css'
 import { blogService } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import initialPosts from '../data/posts'
@@ -52,8 +54,6 @@ const NewBlogPage = () => {
   const [attachDragActive, setAttachDragActive] = useState(false)
   const coverInputRef = useRef(null)
   const attachInputRef = useRef(null)
-  const textareaRef = useRef(null)
-  const colorInputRef = useRef(null)
 
   // AI Panel States
   const [aiPrompt, setAiPrompt] = useState('')
@@ -72,7 +72,8 @@ const NewBlogPage = () => {
   const handleGenerateClick = () => {
     if (!aiPrompt.trim()) return
 
-    if (formState.content.trim()) {
+    const hasTextContent = formState.content.replace(/<[^>]*>/g, '').trim()
+    if (hasTextContent) {
       setShowAIConfirm(true)
     } else {
       handleGenerate('replace')
@@ -124,7 +125,8 @@ const NewBlogPage = () => {
             try {
               const data = JSON.parse(dataStr)
               if (data.type === 'content') {
-                currentContent += data.text
+                const formattedChunk = data.text.replace(/\n/g, '<br>')
+                currentContent += formattedChunk
                 setFormState((prev) => ({
                   ...prev,
                   content: currentContent
@@ -164,13 +166,6 @@ const NewBlogPage = () => {
     }
   }
 
-  const previewParagraphs = useMemo(() => {
-    if (!formState.content.trim()) {
-      return ['Your draft preview will appear here as you write.']
-    }
-
-    return formState.content.split('\n').filter((line) => line.trim().length)
-  }, [formState.content])
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -187,33 +182,6 @@ const NewBlogPage = () => {
     setIsPreview((prev) => !prev)
   }
 
-  const handleFormat = (startTag, endTag) => {
-    const textarea = textareaRef.current
-    if (!textarea) return
-
-    const start = textarea.selectionStart
-    const end = textarea.selectionEnd
-    const text = formState.content
-
-    const selectedText = text.substring(start, end)
-    const replacement = `${startTag}${selectedText}${endTag}`
-
-    const newContent = text.substring(0, start) + replacement + text.substring(end)
-
-    setFormState((prev) => ({ ...prev, content: newContent }))
-
-    // Refocus and restore selection
-    setTimeout(() => {
-      textarea.focus()
-      textarea.setSelectionRange(start + startTag.length, start + startTag.length + selectedText.length)
-    }, 0)
-  }
-
-  const handleColorChange = (e) => {
-    const selectedColor = e.target.value
-    if (!selectedColor) return
-    handleFormat(`<span style="color: ${selectedColor}">`, '</span>')
-  }
 
   const handleSaveDraft = async () => {
     // basic client-side validation
@@ -573,71 +541,23 @@ const NewBlogPage = () => {
               </ul>
             )}
           </div>
-          <div className="text-toolbar">
-            <button
-              type="button"
-              className="toolbar-btn"
-              onMouseDown={(e) => { e.preventDefault(); handleFormat('<strong>', '</strong>'); }}
-              title="Bold"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" /><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z" /></svg>
-            </button>
-            <button
-              type="button"
-              className="toolbar-btn"
-              onMouseDown={(e) => { e.preventDefault(); handleFormat('<em>', '</em>'); }}
-              title="Italic"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="4" x2="10" y2="4" /><line x1="14" y1="20" x2="5" y2="20" /><line x1="15" y1="4" x2="9" y2="20" /></svg>
-            </button>
-            <button
-              type="button"
-              className="toolbar-btn"
-              onMouseDown={(e) => { e.preventDefault(); handleFormat('<u>', '</u>'); }}
-              title="Underline"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3" /><line x1="4" y1="21" x2="20" y2="21" /></svg>
-            </button>
-            <button
-              type="button"
-              className="toolbar-btn"
-              onMouseDown={(e) => { e.preventDefault(); handleFormat('<h3>', '</h3>'); }}
-              title="Heading"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="4" x2="4" y2="20" /><line x1="20" y1="4" x2="20" y2="20" /></svg>
-            </button>
-            <button
-              type="button"
-              className="toolbar-btn"
-              onMouseDown={(e) => { e.preventDefault(); handleFormat('<li>', '</li>'); }}
-              title="List Item"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6" /><line x1="8" y1="12" x2="21" y2="12" /><line x1="8" y1="18" x2="21" y2="18" /><line x1="3" y1="6" x2="3.01" y2="6" /><line x1="3" y1="12" x2="3.01" y2="12" /><line x1="3" y1="18" x2="3.01" y2="18" /></svg>
-            </button>
-            <div className="toolbar-separator"></div>
-            <button
-              type="button"
-              className="toolbar-btn color-btn"
-              onMouseDown={(e) => { e.preventDefault(); colorInputRef.current?.click(); }}
-              title="Text Color"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-4.3-7-11-7-11S5 10.7 5 15a7 7 0 0 0 7 7z" /></svg>
-              <input
-                ref={colorInputRef}
-                type="color"
-                onChange={handleColorChange}
-                style={{ position: 'absolute', width: 0, height: 0, opacity: 0, pointerEvents: 'none' }}
-              />
-            </button>
+          <div className="editor-container">
+            <ReactQuill
+              theme="snow"
+              value={formState.content}
+              onChange={(value) => setFormState(prev => ({ ...prev, content: value }))}
+              placeholder="Start writing your story..."
+              modules={{
+                toolbar: [
+                  [{ 'header': [2, 3, false] }],
+                  ['bold', 'italic', 'underline'],
+                  [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                  [{ 'color': [] }],
+                  ['clean']
+                ],
+              }}
+            />
           </div>
-          <textarea
-            ref={textareaRef}
-            className="textarea"
-            name="content"
-            value={formState.content}
-            onChange={handleChange}
-            placeholder="Start writing your story..."
-          ></textarea>
           <div className="editor-actions">
             <div className="save-status">
               {saveState === 'saving' && <span className="status-saving">● Saving…</span>}
@@ -671,9 +591,11 @@ const NewBlogPage = () => {
             <span>{formState.tags || 'No tags yet'}</span>
           </div>
           <div className="preview-body">
-            {previewParagraphs.map((paragraph, index) => (
-              <p key={`preview-${index}`} dangerouslySetInnerHTML={{ __html: paragraph }} />
-            ))}
+            {formState.content ? (
+              <div className="quill-preview" dangerouslySetInnerHTML={{ __html: formState.content }} />
+            ) : (
+              <p>Your draft preview will appear here as you write.</p>
+            )}
           </div>
         </section>
         <aside className="ai-panel">

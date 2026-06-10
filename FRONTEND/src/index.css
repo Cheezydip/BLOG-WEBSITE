@@ -2831,3 +2831,152 @@ select.input {
         width: 100%;
     }
 }
+/* -- React Quill Custom Styles -- */
+.ql-toolbar.ql-snow {
+    background: #faf7f2;
+    border: 1px solid var(--border);
+    border-radius: 12px 12px 0 0;
+    border-bottom: 1px solid var(--border);
+    font-family: inherit;
+    padding: 10px;
+}
+.ql-container.ql-snow {
+    border: 1px solid var(--border);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    background: var(--page-surface);
+    font-family: inherit;
+    font-size: 16px;
+    min-height: 280px;
+}
+.ql-editor {
+    min-height: 280px;
+    padding: 16px;
+}
+.ql-editor.ql-blank::before {
+    color: var(--muted);
+    font-style: normal;
+}
+
+/* Preview Quill Content */
+.quill-preview {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+.quill-preview p {
+    margin-bottom: 12px;
+}
+.quill-preview ul {
+    list-style-type: disc;
+    margin-left: 20px;
+    margin-bottom: 12px;
+}
+.quill-preview ol {
+    list-style-type: decimal;
+    margin-left: 20px;
+    margin-bottom: 12px;
+}
+.quill-preview strong {
+    font-weight: 700;
+}
+.quill-preview em {
+    font-style: italic;
+}
+.quill-preview u {
+    text-decoration: underline;
+}
+
+/* Restore Typography inside Editor and Preview that Tailwind wiped out */
+.ql-editor p, .quill-preview p {
+    margin-bottom: 12px;
+    line-height: 1.7;
+}
+.ql-editor h1, .quill-preview h1 {
+    font-size: 2em;
+    font-weight: bold;
+    margin: 24px 0 12px;
+}
+.ql-editor h2, .quill-preview h2 {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin: 20px 0 12px;
+}
+.ql-editor h3, .quill-preview h3 {
+    font-size: 1.25em;
+    font-weight: bold;
+    margin: 16px 0 12px;
+}
+.ql-editor ul, .quill-preview ul {
+    list-style-type: disc;
+    padding-left: 24px;
+    margin-bottom: 12px;
+}
+.ql-editor ol, .quill-preview ol {
+    list-style-type: decimal;
+    padding-left: 24px;
+    margin-bottom: 12px;
+}
+.ql-editor li, .quill-preview li {
+    margin-bottom: 6px;
+}
+.ql-editor a, .quill-preview a {
+    color: var(--accent-2);
+    text-decoration: underline;
+}
+.ql-editor blockquote, .quill-preview blockquote {
+    border-left: 4px solid var(--border);
+    padding-left: 16px;
+    margin: 16px 0;
+    color: var(--muted);
+    font-style: italic;
+}
+
+/* Override Quill toolbar default blue hover colors to Theme Orange */
+.ql-toolbar.ql-snow button:hover,
+.ql-toolbar.ql-snow button:focus,
+.ql-toolbar.ql-snow button.ql-active,
+.ql-toolbar.ql-snow .ql-picker-label:hover,
+.ql-toolbar.ql-snow .ql-picker-label.ql-active,
+.ql-toolbar.ql-snow .ql-picker-item:hover,
+.ql-toolbar.ql-snow .ql-picker-item.ql-selected {
+    color: var(--accent-2) !important;
+}
+
+.ql-toolbar.ql-snow button:hover .ql-fill,
+.ql-toolbar.ql-snow button:focus .ql-fill,
+.ql-toolbar.ql-snow button.ql-active .ql-fill,
+.ql-toolbar.ql-snow .ql-picker-label:hover .ql-fill,
+.ql-toolbar.ql-snow .ql-picker-label.ql-active .ql-fill,
+.ql-toolbar.ql-snow .ql-picker-item:hover .ql-fill,
+.ql-toolbar.ql-snow .ql-picker-item.ql-selected .ql-fill,
+.ql-toolbar.ql-snow .ql-picker-item:hover .ql-stroke.ql-fill,
+.ql-toolbar.ql-snow .ql-picker-item.ql-selected .ql-stroke.ql-fill {
+    fill: var(--accent-2) !important;
+}
+
+.ql-toolbar.ql-snow button:hover .ql-stroke,
+.ql-toolbar.ql-snow button:focus .ql-stroke,
+.ql-toolbar.ql-snow button.ql-active .ql-stroke,
+.ql-toolbar.ql-snow .ql-picker-label:hover .ql-stroke,
+.ql-toolbar.ql-snow .ql-picker-label.ql-active .ql-stroke,
+.ql-toolbar.ql-snow .ql-picker-item:hover .ql-stroke,
+.ql-toolbar.ql-snow .ql-picker-item.ql-selected .ql-stroke,
+.ql-toolbar.ql-snow .ql-picker-item:hover .ql-stroke-miter,
+.ql-toolbar.ql-snow .ql-picker-item.ql-selected .ql-stroke-miter {
+    stroke: var(--accent-2) !important;
+}
+
+/* Add hover and focus outlines to the editor container to match other inputs */
+.ql-container.ql-snow {
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.ql-container.ql-snow:hover {
+    border-color: var(--accent-2);
+}
+.editor-container:focus-within .ql-container.ql-snow {
+    border-color: var(--accent-2);
+    box-shadow: 0 0 0 4px rgba(208, 140, 79, 0.15);
+}
